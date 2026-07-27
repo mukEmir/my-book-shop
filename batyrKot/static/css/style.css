@@ -1,0 +1,373 @@
+/* ============================================================
+   ОБЩИЕ СТИЛИ И ШРИФТЫ
+   ============================================================ */
+body {
+    background: #0e071b;
+    color: #d1b3ff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+}
+
+/* Заголовки с крутым футуристично-мистическим шрифтом */
+h1, h2, h3, h4, h5, .navbar-brand, .card-title {
+    font-family: 'Unbounded', sans-serif;
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0e071b;
+}
+::-webkit-scrollbar-thumb {
+    background: #571b8a;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #00ffb3;
+}
+
+/* ============================================================
+   ЗАГОЛОВОК СТРАНИЦЫ "ВСЕ ТОВАРЫ"
+   ============================================================ */
+h2, .h2 {
+    color: #f1e5ff;
+    text-shadow: 0 0 15px rgba(177, 94, 255, 0.4);
+    font-weight: 800;
+}
+
+.badge {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: rgba(177, 94, 255, 0.2) !important;
+    color: #00ffb3 !important;
+    border: 1px solid #00ffb3;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    vertical-align: middle;
+}
+
+/* ============================================================
+   НАВИГАЦИЯ
+   ============================================================ */
+.navbar {
+    background: rgba(22, 11, 38, 0.85) !important;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(177, 94, 255, 0.15);
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(177, 94, 255, 0.2);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #e2c2ff 0%, #00ffb3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.navbar .nav-link {
+    color: #c4a7e7 !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 8px 16px !important;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #00ffb3 !important;
+    background: rgba(0, 255, 179, 0.08);
+}
+
+.dropdown-menu {
+    background: #180b2d;
+    border: 1px solid #571b8a;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 8px;
+}
+
+.dropdown-item {
+    color: #d1b3ff !important;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background: rgba(0, 255, 179, 0.15);
+    color: #00ffb3 !important;
+}
+
+/* ============================================================
+   КАРТОЧКИ ТОВАРОВ
+   ============================================================ */
+.card {
+    background: #150a26;
+    border: 1px solid rgba(177, 94, 255, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border-color: #00ffb3;
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.25),
+                0 15px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* Красивая заглушка, если нет картинки */
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #1f0d3d 0%, #0e071b 100%);
+    position: relative;
+    transition: transform 0.5s ease;
+}
+
+.card-img-top[src=""], .card-img-top:not([src]) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.04);
+}
+
+.card-body {
+    padding: 22px;
+    background: #150a26;
+}
+
+.card-title {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.card-text .fw-bold {
+    color: #00ffb3;
+    font-size: 1.3rem;
+    font-family: 'Unbounded', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 255, 179, 0.3);
+}
+
+/* Кнопки карточки */
+.card .btn-success, .btn-primary {
+    background: #00ffb3 !important;
+    border: none !important;
+    color: #0e071b !important;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 800;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.3);
+    transition: all 0.3s ease;
+}
+
+.card .btn-success:hover, .btn-primary:hover {
+    background: #33ffc4 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px rgba(0, 255, 179, 0.6);
+}
+
+.card .btn-outline-primary {
+    border: 1px solid #571b8a !important;
+    color: #d1b3ff !important;
+    background: rgba(87, 27, 138, 0.2) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.card .btn-outline-primary:hover {
+    background: rgba(177, 94, 255, 0.2) !important;
+    color: #00ffb3 !important;
+    border-color: #00ffb3 !important;
+}
+
+/* ============================================================
+   ФИЛЬТРЫ (Исправляем читаемость)
+   ============================================================ */
+#filter-form .card {
+    border: 1px solid rgba(177, 94, 255, 0.25);
+    border-radius: 20px;
+    background: #150a26;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #251042, #150a26) !important;
+    border-bottom: 1px solid rgba(177, 94, 255, 0.2);
+    border-radius: 20px 20px 0 0 !important;
+    padding: 18px 20px;
+}
+
+.card-header h5 {
+    color: #00ffb3;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+/* Починили тусклый зеленый цвет заголовков в фильтрах */
+#filter-form label,
+#filter-form .form-label,
+#filter-form h6 {
+    color: #e2c2ff !important;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+#filter-form .form-check-label {
+    color: #c4a7e7 !important;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+#filter-form .form-check-input {
+    background-color: #0e071b;
+    border-color: #571b8a;
+}
+
+#filter-form .form-check-input:checked {
+    background-color: #00ffb3;
+    border-color: #00ffb3;
+    box-shadow: 0 0 10px #00ffb3;
+}
+
+#filter-form .form-control,
+#filter-form .form-select {
+    border: 1px solid #571b8a;
+    border-radius: 10px;
+    background: #0e071b;
+    color: #00ffb3;
+    padding: 10px;
+    font-weight: 600;
+}
+
+#filter-form .form-control:focus,
+#filter-form .form-select:focus {
+    border-color: #00ffb3;
+    box-shadow: 0 0 12px rgba(0, 255, 179, 0.3);
+    outline: none;
+}
+
+#filter-form .btn-primary {
+    background: #00ffb3 !important;
+    color: #0e071b !important;
+    font-weight: 800;
+    border-radius: 10px;
+}
+
+#filter-form .btn-outline-secondary {
+    border: 1px solid #571b8a;
+    color: #c4a7e7;
+    background: transparent;
+    border-radius: 10px;
+}
+
+#filter-form .btn-outline-secondary:hover {
+    background: rgba(177, 94, 255, 0.15);
+    color: #ffffff;
+}
+
+/* ============================================================
+   ПАГИНАЦИЯ
+   ============================================================ */
+.pagination .page-link {
+    color: #d1b3ff;
+    background: #150a26;
+    border: 1px solid #571b8a;
+    border-radius: 10px;
+    margin: 0 4px;
+    font-weight: 700;
+}
+
+.pagination .page-link:hover {
+    background: rgba(0, 255, 179, 0.15);
+    color: #00ffb3;
+    border-color: #00ffb3;
+}
+
+.pagination .page-item.active .page-link {
+    background: #00ffb3;
+    border-color: #00ffb3;
+    color: #0e071b;
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.4);
+}
+
+/* ============================================================
+   ПРИНУДИТЕЛЬНАЯ ПОДСВЕТКА КНОПОК ДЛЯ ТЁМНОЙ ТЕМЫ
+   ============================================================ */
+
+/* 1. Кнопка "Добавить в корзину" (.add-to-cart-btn или .btn-success) */
+.add-to-cart-btn,
+.btn-success {
+    background-color: #00ffb3 !important; /* Яркий неон */
+    color: #0e071b !important;            /* Тёмный четкий текст */
+    border: none !important;
+    font-weight: 800 !important;
+    font-family: 'Unbounded', sans-serif !important;
+    padding: 10px 22px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.4) !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+.add-to-cart-btn:hover,
+.btn-success:hover {
+    background-color: #33ffc4 !important;
+    color: #000000 !important;
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.8) !important;
+    transform: translateY(-2px);
+}
+
+/* 2. Кнопка "В избранное" (.favorite-btn) */
+.favorite-btn,
+.btn-outline-danger,
+.btn-danger {
+    background: rgba(255, 77, 109, 0.15) !important;
+    color: #ff4d6d !important;             /* Ярко-розовый текст */
+    border: 1px solid #ff4d6d !important;   /* Яркая рамка */
+    font-weight: 700 !important;
+    padding: 10px 20px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 12px rgba(255, 77, 109, 0.25) !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+.favorite-btn:hover,
+.btn-outline-danger:hover {
+    background: #ff4d6d !important;
+    color: #ffffff !important;             /* Белый текст при наведении */
+    box-shadow: 0 0 22px rgba(255, 77, 109, 0.6) !important;
+    transform: translateY(-2px);
+}
+
+/* 3. Текст "Кол-во:" и сам инпут */
+label[for="quantity"], .col-form-label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+#quantity, input[name="quantity"] {
+    background-color: #1a0c33 !important;
+    color: #00ffb3 !important;
+    border: 1px solid #571b8a !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    text-align: center;
+}

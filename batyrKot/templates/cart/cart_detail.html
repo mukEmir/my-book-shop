@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block content %}
+    <h1>Корзина</h1>
+
+    <div id="cart-container">
+        {% if cart.items.all %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Товар</th>
+                            <th>Количество</th>
+                            <th>Цена</th>
+                            <th>Итого</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items">
+                        {% for item in cart.items.all %}
+                            <tr id="cart-item-{{ item.id }}" data-item-id="{{ item.id }}">
+                                <td>
+                                    <a href="{% url 'shop:product_detail' item.product.slug %}">
+                                        {{ item.product.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <!-- ============================================================ -->
+                                    <!-- 🚀 AJAX-ОБНОВЛЕНИЕ КОЛИЧЕСТВА (без перезагрузки) -->
+                                    <!-- ============================================================ -->
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <input type="number"
+                                               class="form-control cart-quantity-input"
+                                               value="{{ item.quantity }}"
+                                               min="1"
+                                               max="{{ item.product.stock }}"
+                                               style="width: 70px;"
+                                               data-item-id="{{ item.id }}">
+                                        <button class="btn btn-sm btn-warning cart-update-btn"
+                                                data-item-id="{{ item.id }}">
+                                            Обновить
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="item-price">{{ item.product.final_price }} ₽</td>
+                                <td class="item-total" id="item-total-{{ item.id }}">
+                                    {{ item.total_price }} ₽
+                                </td>
+                                <td>
+                                    <!-- ============================================================ -->
+                                    <!-- 🚀 AJAX-УДАЛЕНИЕ (без перезагрузки) -->
+                                    <!-- ============================================================ -->
+                                    <button class="btn btn-sm btn-danger cart-remove-btn"
+                                            data-item-id="{{ item.id }}">
+                                        🗑️ Удалить
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><strong>Итого:</strong></td>
+                            <td><strong id="cart-total">{{ cart.total_price }} ₽</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <a href="{% url 'orders:checkout' %}" class="btn btn-success">Оформить заказ</a>
+        {% else %}
+            <div class="alert alert-info">
+                Корзина пуста. <a href="{% url 'shop:product_list' %}">Перейти к покупкам</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 🚀 AJAX-СКРИПТ ДЛЯ КОРЗИНЫ -->
+    <!-- ============================================================ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ------------------------------------------------------------
+            // 1. ОБНОВЛЕНИЕ КОЛИЧЕСТВА
+            // ------------------------------------------------------------
+            document.querySelectorAll('.cart-update-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const itemId = this.dataset.itemId;
+                    const input = document.querySelector(`.cart-quantity-input[data-item-id="${itemId}"]`);
+                    const quantity = parseInt(input.value);
+
+                    if (quantity < 1) {
+                        showNotification('Количество должно быть больше 0', 'warning');
+                        return;
+                    }
+
+                    fetch(`/cart/api/update/${itemId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ quantity: quantity })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Обновляем итоговую сумму строки
+                            const itemTotal = document.getElementById(`item-total-${itemId}`);
+                            if (itemTotal) {
+                                itemTotal.textContent = data.item_total + ' ₽';
+                            }
+
+                            // Обновляем общую сумму корзины
+                            const cartTotal = document.getElementById('cart-total');
+                            if (cartTotal) {
+                                cartTotal.textContent = data.total_price + ' ₽';
+                            }
+
+                            // Обновляем счётчик в навигации
+                            const countElement = document.querySelector('.cart-count');
+                            if (countElement) {
+                                countElement.textContent = data.total_items;
+                            }
+
+                            showNotification(data.message, 'success');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка обновления:', error);
+                        showNotification('Ошибка сервера', 'error');
+                    });
+                });
+            });
+
+            // ------------------------------------------------------------
+            // 2. УДАЛЕНИЕ ТОВАРА
+            // ------------------------------------------------------------
+            document.querySelectorAll('.cart-remove-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const itemId = this.dataset.itemId;
+
+                    if (!confirm('Удалить этот товар из корзины?')) return;
+
+                    fetch(`/cart/api/remove/${itemId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken,
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Удаляем строку из таблицы
+                            const row = document.getElementById(`cart-item-${itemId}`);
+                            if (row) {
+                                row.remove();
+                            }
+
+                            // Обновляем общую сумму
+                            const cartTotal = document.getElementById('cart-total');
+                            if (cartTotal) {
+                                cartTotal.textContent = data.total_price + ' ₽';
+                            }
+
+                            // Обновляем счётчик
+                            const countElement = document.querySelector('.cart-count');
+                            if (countElement) {
+                                countElement.textContent = data.total_items;
+                            }
+
+                            showNotification(data.message, 'success');
+
+                            // Если корзина пуста — показываем сообщение
+                            if (data.total_items === 0) {
+                                const container = document.getElementById('cart-container');
+                                if (container) {
+                                    container.innerHTML = `
+                                        <div class="alert alert-info">
+                                            Корзина пуста. <a href="{% url 'shop:product_list' %}">Перейти к покупкам</a>
+                                        </div>
+                                    `;
+                                }
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка удаления:', error);
+                        showNotification('Ошибка сервера', 'error');
+                    });
+                });
+            });
+
+            // ------------------------------------------------------------
+            // 3. ОБНОВЛЕНИЕ ПРИ НАЖАТИИ ENTER В ПОЛЕ КОЛИЧЕСТВА
+            // ------------------------------------------------------------
+            document.querySelectorAll('.cart-quantity-input').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const itemId = this.dataset.itemId;
+                        const btn = document.querySelector(`.cart-update-btn[data-item-id="${itemId}"]`);
+                        if (btn) {
+                            btn.click();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

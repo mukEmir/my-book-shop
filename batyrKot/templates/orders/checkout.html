@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<div class="row g-4 justify-content-center mb-5">
+    <div class="col-12">
+        <h1 class="page-title mb-4">🔮 Оформление заказа</h1>
+    </div>
+
+    <!-- Список товаров в чеке -->
+    <div class="col-lg-5 order-lg-2">
+        <div class="custom-card p-4 rounded-4 mb-4">
+            <h4 class="card-subtitle mb-3">Состав заказа</h4>
+
+            <div class="order-items-list mb-3">
+                {% for item in cart.items.all %}
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-purple">
+                        <div>
+                            <div class="fw-bold text-light">{{ item.product.name }}</div>
+                            <small class="text-purple-light">{{ item.quantity }} шт. × {{ item.product.final_price }} ₽</small>
+                        </div>
+                        <span class="fw-bold text-neon-green">{{ item.total_price }} ₽</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-2 fs-5">
+                <span class="fw-bold text-light">Итого к оплате:</span>
+                <span class="fw-bold text-neon-green fs-3">{{ cart.total_price }} ₽</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Форма данных доставки -->
+    <div class="col-lg-7 order-lg-1">
+        <div class="custom-card p-4 p-md-5 rounded-4">
+            <h4 class="card-subtitle mb-4">Детали доставки</h4>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="address" class="form-label custom-form-label">Адрес доставки</label>
+                    <input type="text" name="address" id="address" class="form-control custom-input" placeholder="Улица, дом, квартира" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label custom-form-label">Телефон для связи</label>
+                    <input type="tel" name="phone" id="phone" class="form-control custom-input" placeholder="+7 (999) 000-00-00" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="comment" class="form-label custom-form-label">Комментарий к заказу</label>
+                    <textarea name="comment" id="comment" class="form-control custom-input" rows="3" placeholder="Код домофона, пожелания к доставке..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-checkout-neon w-100 py-3">
+                    💳 Перейти к оплате
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

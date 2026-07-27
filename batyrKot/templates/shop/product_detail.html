@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="product-detail-card p-4 p-md-5 rounded-4 mb-5">
+    <div class="row g-4 align-items-center">
+        <!-- Фото товара -->
+        <div class="col-md-6">
+            <div class="product-image-wrapper rounded-4 overflow-hidden shadow-lg">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid w-100 object-fit-cover" alt="{{ product.name }}">
+                {% else %}
+                    <div class="no-image-placeholder d-flex align-items-center justify-content-center p-5">
+                        <span class="fs-1">📖</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Информация о товаре -->
+        <div class="col-md-6">
+            <!-- Хлебные крошки -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-3">
+                    <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'shop:category_detail' product.category.slug %}">{{ product.category.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                </ol>
+            </nav>
+
+            <h1 class="product-title mb-2">{{ product.name }}</h1>
+            <p class="product-category-subtitle mb-4">Категория: <span>{{ product.category.name }}</span></p>
+
+            <!-- Цена и Скидка -->
+            <div class="price-block mb-4 d-flex align-items-center gap-3">
+                {% if product.discount > 0 %}
+                    <span class="old-price text-decoration-line-through">{{ product.price }} ₽</span>
+                    <span class="current-price fw-bold">{{ product.final_price }} ₽</span>
+                    <span class="badge badge-discount">-{{ product.discount }}%</span>
+                {% else %}
+                    <span class="current-price fw-bold">{{ product.price }} ₽</span>
+                {% endif %}
+            </div>
+
+            <!-- Наличие -->
+            <div class="stock-info mb-4 fs-6">
+                <strong>Наличие:</strong>
+                {% if product.stock > 0 %}
+                    <span class="stock-in text-success-neon">В наличии ({{ product.stock }} шт.)</span>
+                {% else %}
+                    <span class="stock-out text-danger-neon">Нет в наличии</span>
+                {% endif %}
+            </div>
+
+            <hr class="custom-divider my-4">
+
+            <!-- Описание -->
+            <div class="description-block mb-4">
+                <h5 class="section-subtitle mb-2">Описание</h5>
+                <div class="product-description">{{ product.description|linebreaks }}</div>
+            </div>
+
+            <hr class="custom-divider my-4">
+
+            <!-- Корзина и Избранное -->
+            <div class="action-block d-flex flex-wrap gap-3 align-items-center">
+                {% if user.is_authenticated %}
+                    {% if product.stock > 0 %}
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="quantity" class="form-label mb-0 fw-semibold text-light">Кол-во:</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control custom-qty-input">
+                        </div>
+                        <button class="btn btn-success-neon add-to-cart-btn px-4 py-2" data-url="{% url 'cart:api_add' product.slug %}">
+                            🛒 Добавить в корзину
+                        </button>
+                    {% else %}
+                        <div class="alert custom-alert-warning mb-0">Товара нет в наличии</div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert custom-alert-info mb-0">
+                        <a href="{% url 'account_login' %}" class="text-neon-link">Войдите</a>, чтобы купить товар.
+                    </div>
+                {% endif %}
+
+                <!-- Избранное -->
+                {% if user.is_authenticated %}
+                    <button class="btn {% if is_favorite %}btn-favorite-active{% else %}btn-favorite-outline{% endif %} favorite-btn px-3 py-2"
+                            data-url="{% url 'shop:api_toggle_favorite' product.slug %}">
+                        {% if is_favorite %}
+                            В избранном
+                        {% else %}
+                            В избранное
+                        {% endif %}
+                    </button>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="btn btn-favorite-outline px-3 py-2">
+                        В избранное
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

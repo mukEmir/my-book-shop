@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}Все товары{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- ============================================================ -->
+    <!-- 🚀 БОКОВАЯ ПАНЕЛЬ С ФИЛЬТРАМИ -->
+    <!-- ============================================================ -->
+    <div class="col-md-3">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Фильтры</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" id="filter-form">
+                    <!-- Категории (чекбоксы) -->
+                    <div class="mb-3">
+                        <label class="fw-bold">Категории</label>
+                        {% for category in all_categories %}
+                            <div class="form-check">
+                                <input class="form-check-input category-checkbox"
+                                       type="checkbox"
+                                       name="categories"
+                                       value="{{ category.slug }}"
+                                       id="cat-{{ category.slug }}"
+                                       {% if category.slug in current_filters.categories %}checked{% endif %}>
+                                <label class="form-check-label" for="cat-{{ category.slug }}">
+                                    {{ category.name }}
+                                </label>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted small">Нет категорий</p>
+                        {% endfor %}
+                    </div>
+
+                    <hr>
+
+                    <!-- Цена -->
+                    <div class="mb-3">
+                        <label class="fw-bold">Цена</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="number"
+                                       name="price_min"
+                                       class="form-control form-control-sm"
+                                       placeholder="От"
+                                       value="{{ current_filters.price_min }}">
+                            </div>
+                            <div class="col-6">
+                                <input type="number"
+                                       name="price_max"
+                                       class="form-control form-control-sm"
+                                       placeholder="До"
+                                       value="{{ current_filters.price_max }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Наличие -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="in_stock"
+                                   id="in_stock"
+                                   {% if current_filters.in_stock %}checked{% endif %}>
+                            <label class="form-check-label" for="in_stock">
+                                Только в наличии
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Сортировка -->
+                    <div class="mb-3">
+                        <label class="fw-bold">Сортировка</label>
+                        <select name="sort_by" class="form-select form-select-sm">
+                            <option value="newest" {% if current_filters.sort_by == 'newest' %}selected{% endif %}>
+                                Сначала новые
+                            </option>
+                            <option value="price_asc" {% if current_filters.sort_by == 'price_asc' %}selected{% endif %}>
+                                Цена: по возрастанию
+                            </option>
+                            <option value="price_desc" {% if current_filters.sort_by == 'price_desc' %}selected{% endif %}>
+                                Цена: по убыванию
+                            </option>
+                            <option value="name" {% if current_filters.sort_by == 'name' %}selected{% endif %}>
+                                По названию
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Кнопки -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Применить</button>
+                        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-secondary">Сбросить всё</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- СПИСОК ТОВАРОВ -->
+    <!-- ============================================================ -->
+    <div class="col-md-9">
+        <h1 class="mb-4">
+            {% if current_category %}
+                {{ current_category.name }}
+            {% else %}
+                Все товары
+            {% endif %}
+            <span class="badge bg-secondary fs-6">{{ page_obj.paginator.count }} товаров</span>
+        </h1>
+
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x180" class="card-img-top" alt="No image">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">
+                                {% if product.discount > 0 %}
+                                    <span class="text-muted text-decoration-line-through">{{ product.price }} ₽</span>
+                                    <span class="text-danger fw-bold">{{ product.final_price }} ₽</span>
+                                    <span class="badge bg-success">-{{ product.discount }}%</span>
+                                {% else %}
+                                    <span class="fw-bold">{{ product.price }} ₽</span>
+                                {% endif %}
+                            </p>
+
+                            <!-- Наличие в карточке -->
+                            <p class="small">
+                                {% if product.stock > 0 %}
+                                    <span class="text-success">✅ В наличии ({{ product.stock }})</span>
+                                {% else %}
+                                    <span class="text-danger">❌ Нет в наличии</span>
+                                {% endif %}
+                            </p>
+
+                            {% if user.is_authenticated and product.stock > 0 %}
+                                <button class="btn btn-success btn-sm add-to-cart-btn mb-2"
+                                        data-url="{% url 'cart:api_add' product.slug %}">
+                                    🛒 В корзину
+                                </button>
+                            {% elif user.is_authenticated %}
+                                <button class="btn btn-secondary btn-sm mb-2" disabled>
+                                    Нет в наличии
+                                </button>
+                            {% else %}
+                                <a href="{% url 'account_login' %}" class="btn btn-outline-secondary btn-sm mb-2">
+                                    🔒 Войдите, чтобы купить
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-outline-primary btn-sm mt-auto">
+                                Подробнее
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        Товаров с такими параметрами не найдено.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Пагинация -->
+        {% if is_paginated %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% for key, value in current_filters.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                Первая
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in current_filters.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                Назад
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }}</span>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in current_filters.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                Вперед
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in current_filters.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                Последняя
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Магазин{% endblock %}</title>
 
-    <!-- Google Fonts (Мистический & Дерзкий сет шрифтов) -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
@@ -15,15 +15,44 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Стили для красивого темного поиска -->
+    <style>
+        .navbar input[type="search"] {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+        .navbar input[type="search"]::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .navbar input[type="search"]:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: #00ffb3;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 255, 179, 0.2);
+        }
+        .search-btn {
+            background-color: #00ffb3;
+            color: #0b0914;
+            font-weight: 600;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .search-btn:hover {
+            background-color: #00cca3;
+            box-shadow: 0 0 10px rgba(0, 255, 179, 0.4);
+        }
+    </style>
 </head>
 <body>
     <!-- ============================================================ -->
     <!-- НАВИГАЦИЯ -->
     <!-- ============================================================ -->
     <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <!-- Логотип (убрали светлый inline-фон, добавили свечение) -->
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'shop:product_list' %}">
+        <div class="container-fluid px-4">
+            <!-- Логотип -->
+            <a class="navbar-brand d-flex align-items-center me-3" href="{% url 'shop:product_list' %}">
                 <img src="{% static 'images/papa.png' %}" alt="Логотип" height="80" class="d-inline-block align-top">
             </a>
 
@@ -31,8 +60,9 @@
                 <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+            <div class="collapse navbar-collapse justify-content-between align-items-center" id="navbarNav">
+                <!-- Левое меню -->
+                <ul class="navbar-nav align-items-lg-center mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'shop:product_list' %}">🏠 Главная</a>
                     </li>
@@ -46,49 +76,53 @@
                             {% endfor %}
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shop:search' %}">Поиск</a>
-                    </li>
-
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'shop:product_create' %}">➕ Создать книгу</a>
+                            <a class="nav-link text-nowrap" href="{% url 'shop:product_create' %}">➕ Создать книгу</a>
                         </li>
                     {% endif %}
                 </ul>
 
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:profile' %}">
-                                👤 Профиль
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'orders:history' %}">Заказы</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'cart:detail' %}">
-                                🛒 Корзина (<span class="cart-count">{{ cart_total_items|default:0 }}</span>)
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'shop:favorite_list' %}">
-                                Избранное (<span class="favorites-count">{{ user.favorites.count|default:0 }}</span>)
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_logout' %}">Выйти</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_login' %}">Войти</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_signup' %}">Регистрация</a>
-                        </li>
-                    {% endif %}
-                </ul>
+                <!-- Поиск и Правое меню (общий флекс-контейнер) -->
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+                    <!-- Поиск -->
+                    <form class="d-flex flex-nowrap" method="get" action="{% url 'shop:search' %}">
+                        <input class="form-control form-control-sm me-2" type="search" name="q" placeholder="Поиск книг..." value="{{ request.GET.q }}">
+                        <button class="btn btn-sm search-btn text-nowrap" type="submit">Найти</button>
+                    </form>
+
+                    <!-- Правое меню -->
+                    <ul class="navbar-nav align-items-lg-center mb-0 gap-lg-1">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link text-nowrap" href="{% url 'users:profile' %}">👤 Профиль</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-nowrap" href="{% url 'orders:history' %}">Заказы</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-nowrap" href="{% url 'cart:detail' %}">
+                                    🛒 Корзина (<span class="cart-count">{{ cart_total_items|default:0 }}</span>)
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-nowrap" href="{% url 'shop:favorite_list' %}">
+                                    Избранное (<span class="favorites-count">{{ favorites_total_items|default:0 }}</span>)
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-nowrap" href="{% url 'account_logout' %}">Выйти</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link text-nowrap" href="{% url 'account_login' %}">Войти</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-nowrap" href="{% url 'account_signup' %}">Регистрация</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -123,7 +157,6 @@
         }
         const csrftoken = getCookie('csrftoken');
 
-        /* Обновлённые мистические нотификации */
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
             notification.className = `position-fixed top-0 end-0 m-3 p-3 rounded-4 fw-bold`;
@@ -155,30 +188,6 @@
             }, 2800);
         }
 
-        function updateCartCount() {
-            const countElement = document.querySelector('.cart-count');
-            if (!countElement) return;
-
-            fetch('{% url "cart:api_count" %}', {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(response => response.json())
-            .then(data => { countElement.textContent = data.total_items; })
-            .catch(error => console.error('Ошибка корзины:', error));
-        }
-
-        function updateFavoritesCount() {
-            const countElement = document.querySelector('.favorites-count');
-            if (!countElement) return;
-
-            fetch('{% url "shop:api_favorites_count" %}', {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(response => response.json())
-            .then(data => { countElement.textContent = data.total_favorites; })
-            .catch(error => console.error('Ошибка избранного:', error));
-        }
-
         /* Клик "Добавить в корзину" */
         document.addEventListener('click', function(e) {
             const btn = e.target.closest('.add-to-cart-btn');
@@ -186,7 +195,10 @@
 
             e.preventDefault();
             const url = btn.dataset.url;
-            const quantityInput = document.querySelector('input[name="quantity"]');
+            if (!url) return;
+
+            const container = btn.closest('form') || btn.closest('.card') || document;
+            const quantityInput = container.querySelector('input[name="quantity"]');
             const quantity = quantityInput ? quantityInput.value : 1;
 
             fetch(url, {
@@ -220,6 +232,7 @@
 
             e.preventDefault();
             const url = btn.dataset.url;
+            if (!url) return;
 
             fetch(url, {
                 method: 'POST',
@@ -250,13 +263,6 @@
                 showNotification('Ошибка сервера', 'error');
             });
         });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCartCount();
-            updateFavoritesCount();
-        });
-        setInterval(updateCartCount, 30000);
-        setInterval(updateFavoritesCount, 30000);
     </script>
 </body>
 </html>

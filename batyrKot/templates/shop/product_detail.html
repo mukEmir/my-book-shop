@@ -35,11 +35,11 @@
             <!-- Цена и Скидка -->
             <div class="price-block mb-4 d-flex align-items-center gap-3">
                 {% if product.discount > 0 %}
-                    <span class="old-price text-decoration-line-through">{{ product.price }} ₽</span>
-                    <span class="current-price fw-bold">{{ product.final_price }} ₽</span>
+                    <span class="old-price text-decoration-line-through">{{ product.price|floatformat:2 }} ₽</span>
+                    <span class="current-price fw-bold">{{ product.final_price|floatformat:2 }} ₽</span>
                     <span class="badge badge-discount">-{{ product.discount }}%</span>
                 {% else %}
-                    <span class="current-price fw-bold">{{ product.price }} ₽</span>
+                    <span class="current-price fw-bold">{{ product.price|floatformat:2 }} ₽</span>
                 {% endif %}
             </div>
 

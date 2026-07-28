@@ -8,12 +8,10 @@ body {
     min-height: 100vh;
 }
 
-/* Заголовки с крутым футуристично-мистическим шрифтом */
 h1, h2, h3, h4, h5, .navbar-brand, .card-title {
     font-family: 'Unbounded', sans-serif;
 }
 
-/* Кастомный скроллбар */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -29,7 +27,7 @@ h1, h2, h3, h4, h5, .navbar-brand, .card-title {
 }
 
 /* ============================================================
-   ЗАГОЛОВОК СТРАНИЦЫ "ВСЕ ТОВАРЫ"
+   ЗАГОЛОВКИ И ОБЩИЙ ТЕКСТ
    ============================================================ */
 h2, .h2 {
     color: #f1e5ff;
@@ -48,8 +46,25 @@ h2, .h2 {
     vertical-align: middle;
 }
 
+/* Исправление скрытого/сливающегося текста в карточках и профиле */
+.card-body,
+.card-body p,
+.card-body span,
+.card-body td,
+.card-body th,
+.profile-info,
+.text-muted {
+    color: #d1b3ff !important;
+}
+
+.card-body strong,
+.card-body b,
+.form-label {
+    color: #ffffff !important;
+}
+
 /* ============================================================
-   НАВИГАЦИЯ
+   НАВИГАЦИЯ И ВЫПАДАЮЩЕЕ МЕНЮ КАТЕГОРИЙ (ПОВЕРХ ВСЕГО)
    ============================================================ */
 .navbar {
     background: rgba(22, 11, 38, 0.85) !important;
@@ -57,6 +72,8 @@ h2, .h2 {
     box-shadow: 0 4px 30px rgba(177, 94, 255, 0.15);
     padding: 14px 0;
     border-bottom: 1px solid rgba(177, 94, 255, 0.2);
+    position: relative;
+    z-index: 1050 !important;
 }
 
 .navbar-brand {
@@ -82,28 +99,41 @@ h2, .h2 {
     background: rgba(0, 255, 179, 0.08);
 }
 
-.dropdown-menu {
-    background: #180b2d;
-    border: 1px solid #571b8a;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    padding: 8px;
+.navbar .dropdown {
+    position: relative;
 }
 
-.dropdown-item {
+/* Жесткий вывод меню категорий поверх фильтров и карточек */
+.navbar .dropdown-menu,
+.navbar-nav .dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    background: #180b2d !important;
+    border: 1px solid #571b8a !important;
+    border-radius: 14px !important;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9) !important;
+    padding: 8px;
+    z-index: 999999 !important;
+}
+
+.navbar .dropdown-menu .dropdown-item,
+.navbar-nav .dropdown-menu li a {
     color: #d1b3ff !important;
+    background-color: transparent !important;
     border-radius: 8px;
-    padding: 8px 14px;
+    padding: 10px 14px;
     font-weight: 500;
 }
 
-.dropdown-item:hover {
-    background: rgba(0, 255, 179, 0.15);
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar-nav .dropdown-menu li a:hover {
+    background: rgba(0, 255, 179, 0.15) !important;
     color: #00ffb3 !important;
 }
 
 /* ============================================================
-   КАРТОЧКИ ТОВАРОВ
+   КАРТОЧКИ ТОВАРОВ И КНОПКИ
    ============================================================ */
 .card {
     background: #150a26;
@@ -122,19 +152,12 @@ h2, .h2 {
                 0 15px 30px rgba(0, 0, 0, 0.7);
 }
 
-/* Красивая заглушка, если нет картинки */
 .card-img-top {
     height: 220px;
     object-fit: cover;
     background: linear-gradient(135deg, #1f0d3d 0%, #0e071b 100%);
     position: relative;
     transition: transform 0.5s ease;
-}
-
-.card-img-top[src=""], .card-img-top:not([src]) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .card:hover .card-img-top {
@@ -161,24 +184,47 @@ h2, .h2 {
     text-shadow: 0 0 10px rgba(0, 255, 179, 0.3);
 }
 
-/* Кнопки карточки */
-.card .btn-success, .btn-primary {
-    background: #00ffb3 !important;
-    border: none !important;
+.add-to-cart-btn,
+.btn-success {
+    background-color: #00ffb3 !important;
     color: #0e071b !important;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 800;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 0 15px rgba(0, 255, 179, 0.3);
-    transition: all 0.3s ease;
+    border: none !important;
+    font-weight: 800 !important;
+    font-family: 'Unbounded', sans-serif !important;
+    font-size: 0.85rem !important;
+    padding: 12px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.4) !important;
+    transition: all 0.25s ease-in-out !important;
 }
 
-.card .btn-success:hover, .btn-primary:hover {
-    background: #33ffc4 !important;
+.add-to-cart-btn:hover,
+.btn-success:hover {
+    background-color: #33ffc4 !important;
+    color: #000000 !important;
+    box-shadow: 0 0 25px rgba(0, 255, 179, 0.8) !important;
     transform: translateY(-2px);
-    box-shadow: 0 0 22px rgba(0, 255, 179, 0.6);
+}
+
+.favorite-btn,
+.btn-outline-danger,
+.btn-danger {
+    background: rgba(255, 77, 109, 0.15) !important;
+    color: #ff4d6d !important;
+    border: 1px solid #ff4d6d !important;
+    font-weight: 700 !important;
+    padding: 10px 20px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 12px rgba(255, 77, 109, 0.25) !important;
+    transition: all 0.25s ease-in-out !important;
+}
+
+.favorite-btn:hover,
+.btn-outline-danger:hover {
+    background: #ff4d6d !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 22px rgba(255, 77, 109, 0.6) !important;
+    transform: translateY(-2px);
 }
 
 .card .btn-outline-primary {
@@ -199,9 +245,10 @@ h2, .h2 {
 }
 
 /* ============================================================
-   ФИЛЬТРЫ (Исправляем читаемость)
+   ФИЛЬТРЫ И ФОРМЫ (ПРОФИЛЬ, РЕДАКТИРОВАНИЕ)
    ============================================================ */
-#filter-form .card {
+#filter-form .card,
+form .card {
     border: 1px solid rgba(177, 94, 255, 0.25);
     border-radius: 20px;
     background: #150a26;
@@ -221,13 +268,14 @@ h2, .h2 {
     letter-spacing: 0.5px;
 }
 
-/* Починили тусклый зеленый цвет заголовков в фильтрах */
+form label,
+.form-label,
 #filter-form label,
 #filter-form .form-label,
 #filter-form h6 {
-    color: #e2c2ff !important;
+    color: #d1b3ff !important;
     font-weight: 700;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 
 #filter-form .form-check-label {
@@ -248,40 +296,64 @@ h2, .h2 {
     box-shadow: 0 0 10px #00ffb3;
 }
 
+/* Поля ввода (инпуты и текстовые зоны) под темную тему */
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="tel"],
+form textarea,
+form select,
+.card-body input,
+.card-body textarea,
 #filter-form .form-control,
-#filter-form .form-select {
-    border: 1px solid #571b8a;
-    border-radius: 10px;
-    background: #0e071b;
-    color: #00ffb3;
-    padding: 10px;
-    font-weight: 600;
+#filter-form .form-select,
+#quantity,
+input[name="quantity"] {
+    background-color: #150a26 !important;
+    color: #00ffb3 !important;
+    border: 1px solid #571b8a !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    font-weight: 600 !important;
+    text-align: left;
 }
 
+#quantity, input[name="quantity"] {
+    text-align: center;
+}
+
+form input:focus,
+form textarea:focus,
+.card-body input:focus,
+.card-body textarea:focus,
 #filter-form .form-control:focus,
 #filter-form .form-select:focus {
-    border-color: #00ffb3;
-    box-shadow: 0 0 12px rgba(0, 255, 179, 0.3);
-    outline: none;
+    background-color: #150a26 !important;
+    color: #00ffb3 !important;
+    border-color: #00ffb3 !important;
+    box-shadow: 0 0 12px rgba(0, 255, 179, 0.3) !important;
+    outline: none !important;
 }
 
-#filter-form .btn-primary {
-    background: #00ffb3 !important;
+form button[type="submit"],
+.btn-primary {
+    background-color: #00ffb3 !important;
     color: #0e071b !important;
-    font-weight: 800;
-    border-radius: 10px;
+    border: none !important;
+    font-weight: 800 !important;
+    font-family: 'Unbounded', sans-serif !important;
+    border-radius: 12px !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 0 15px rgba(0, 255, 179, 0.3) !important;
+    transition: all 0.25s ease !important;
 }
 
-#filter-form .btn-outline-secondary {
-    border: 1px solid #571b8a;
-    color: #c4a7e7;
-    background: transparent;
-    border-radius: 10px;
-}
-
-#filter-form .btn-outline-secondary:hover {
-    background: rgba(177, 94, 255, 0.15);
-    color: #ffffff;
+form button[type="submit"]:hover,
+.btn-primary:hover {
+    background-color: #33ffc4 !important;
+    color: #000000 !important;
+    box-shadow: 0 0 22px rgba(0, 255, 179, 0.6) !important;
+    transform: translateY(-2px);
 }
 
 /* ============================================================
@@ -309,65 +381,47 @@ h2, .h2 {
     box-shadow: 0 0 15px rgba(0, 255, 179, 0.4);
 }
 
-/* ============================================================
-   ПРИНУДИТЕЛЬНАЯ ПОДСВЕТКА КНОПОК ДЛЯ ТЁМНОЙ ТЕМЫ
-   ============================================================ */
-
-/* 1. Кнопка "Добавить в корзину" (.add-to-cart-btn или .btn-success) */
-.add-to-cart-btn,
-.btn-success {
-    background-color: #00ffb3 !important; /* Яркий неон */
-    color: #0e071b !important;            /* Тёмный четкий текст */
-    border: none !important;
-    font-weight: 800 !important;
-    font-family: 'Unbounded', sans-serif !important;
-    padding: 10px 22px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 0 15px rgba(0, 255, 179, 0.4) !important;
-    transition: all 0.25s ease-in-out !important;
+/* Кастомный поиск в шапке */
+.navbar input[type="search"] {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
 }
 
-.add-to-cart-btn:hover,
-.btn-success:hover {
-    background-color: #33ffc4 !important;
-    color: #000000 !important;
-    box-shadow: 0 0 25px rgba(0, 255, 179, 0.8) !important;
-    transform: translateY(-2px);
+.navbar input[type="search"]::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
-/* 2. Кнопка "В избранное" (.favorite-btn) */
-.favorite-btn,
-.btn-outline-danger,
-.btn-danger {
-    background: rgba(255, 77, 109, 0.15) !important;
-    color: #ff4d6d !important;             /* Ярко-розовый текст */
-    border: 1px solid #ff4d6d !important;   /* Яркая рамка */
-    font-weight: 700 !important;
-    padding: 10px 20px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 0 12px rgba(255, 77, 109, 0.25) !important;
-    transition: all 0.25s ease-in-out !important;
+.navbar input[type="search"]:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #00ffb3;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 255, 179, 0.2);
 }
 
-.favorite-btn:hover,
-.btn-outline-danger:hover {
-    background: #ff4d6d !important;
-    color: #ffffff !important;             /* Белый текст при наведении */
-    box-shadow: 0 0 22px rgba(255, 77, 109, 0.6) !important;
-    transform: translateY(-2px);
+/* Кастомная темная таблица */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #ffffff;
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+    --bs-table-striped-color: #ffffff;
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
+    --bs-table-hover-color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* 3. Текст "Кол-во:" и сам инпут */
-label[for="quantity"], .col-form-label {
+.table th, .table td {
     color: #ffffff !important;
-    font-weight: 600 !important;
+    background-color: rgba(18, 15, 30, 0.6) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    vertical-align: middle;
 }
 
-#quantity, input[name="quantity"] {
-    background-color: #1a0c33 !important;
-    color: #00ffb3 !important;
-    border: 1px solid #571b8a !important;
-    border-radius: 8px !important;
-    font-weight: 700 !important;
-    text-align: center;
+.table thead th {
+    background-color: rgba(25, 21, 42, 0.9) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #a29bfe !important;
 }

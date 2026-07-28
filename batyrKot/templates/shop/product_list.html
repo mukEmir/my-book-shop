@@ -128,11 +128,11 @@
                             <h5 class="card-title">{{ product.name }}</h5>
                             <p class="card-text">
                                 {% if product.discount > 0 %}
-                                    <span class="text-muted text-decoration-line-through">{{ product.price }} ₽</span>
-                                    <span class="text-danger fw-bold">{{ product.final_price }} ₽</span>
+                                    <span class="text-muted text-decoration-line-through">{{ product.price|floatformat:2 }} ₽</span>
+                                    <span class="text-danger fw-bold">{{ product.final_price|floatformat:2 }} ₽</span>
                                     <span class="badge bg-success">-{{ product.discount }}%</span>
                                 {% else %}
-                                    <span class="fw-bold">{{ product.price }} ₽</span>
+                                    <span class="fw-bold">{{ product.price|floatformat:2 }} ₽</span>
                                 {% endif %}
                             </p>
 

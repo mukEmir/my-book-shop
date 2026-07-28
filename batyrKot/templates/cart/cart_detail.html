@@ -1,81 +1,93 @@
 {% extends 'base.html' %}
 
-{% block title %}Корзина{% endblock %}
+{% block title %}Корзина — Malignant Body{% endblock %}
 
 {% block content %}
-    <h1>Корзина</h1>
+<div class="container py-4">
+    <h2 class="text-white mb-4 fw-bold" style="font-family: 'Unbounded', sans-serif;">Корзина</h2>
 
     <div id="cart-container">
         {% if cart.items.all %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Товар</th>
-                            <th>Количество</th>
-                            <th>Цена</th>
-                            <th>Итого</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="cart-items">
-                        {% for item in cart.items.all %}
-                            <tr id="cart-item-{{ item.id }}" data-item-id="{{ item.id }}">
-                                <td>
-                                    <a href="{% url 'shop:product_detail' item.product.slug %}">
-                                        {{ item.product.name }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <!-- ============================================================ -->
-                                    <!-- 🚀 AJAX-ОБНОВЛЕНИЕ КОЛИЧЕСТВА (без перезагрузки) -->
-                                    <!-- ============================================================ -->
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <input type="number"
-                                               class="form-control cart-quantity-input"
-                                               value="{{ item.quantity }}"
-                                               min="1"
-                                               max="{{ item.product.stock }}"
-                                               style="width: 70px;"
-                                               data-item-id="{{ item.id }}">
-                                        <button class="btn btn-sm btn-warning cart-update-btn"
+            <div class="card text-light border-0 rounded-4 p-4 mb-4" style="background: rgba(255, 255, 255, 0.03) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(10px);">
+                <div class="table-responsive">
+                    <table class="table table-dark align-middle mb-0" style="background: transparent;">
+                        <thead>
+                            <tr class="text-muted small border-bottom" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+                                <th style="background: transparent;">Товар</th>
+                                <th style="background: transparent;">Количество</th>
+                                <th style="background: transparent;">Цена</th>
+                                <th style="background: transparent;">Итого</th>
+                                <th style="background: transparent;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items">
+                            {% for item in cart.items.all %}
+                                <tr id="cart-item-{{ item.id }}" data-item-id="{{ item.id }}" style="border-color: rgba(255, 255, 255, 0.05);">
+                                    <td style="background: transparent;">
+                                        <a href="{% url 'shop:product_detail' item.product.slug %}" class="text-light text-decoration-none fw-medium">
+                                            {{ item.product.name }}
+                                        </a>
+                                    </td>
+                                    <td style="background: transparent;">
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <input type="number"
+                                                   class="form-control form-control-sm cart-quantity-input text-light"
+                                                   value="{{ item.quantity }}"
+                                                   min="1"
+                                                   max="{{ item.product.stock }}"
+                                                   style="width: 70px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15);"
+                                                   data-item-id="{{ item.id }}">
+                                            <button class="btn btn-sm cart-update-btn rounded-pill px-3"
+                                                    style="background-color: rgba(0, 255, 179, 0.15); color: #00ffb3; border: 1px solid #00ffb3;"
+                                                    data-item-id="{{ item.id }}">
+                                                Обновить
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td style="background: transparent;" class="text-muted">{{ item.product.final_price }} ₽</td>
+                                    <td style="background: transparent;" class="fw-bold" style="color: #00ffb3;" id="item-total-{{ item.id }}">
+                                        <span style="color: #00ffb3;">{{ item.total_price }} ₽</span>
+                                    </td>
+                                    <td style="background: transparent;" class="text-end">
+                                        <button class="btn btn-sm cart-remove-btn rounded-pill px-3"
+                                                style="background-color: rgba(255, 77, 109, 0.15); color: #ff4d6d; border: 1px solid #ff4d6d;"
                                                 data-item-id="{{ item.id }}">
-                                            Обновить
+                                            🗑️ Удалить
                                         </button>
-                                    </div>
-                                </td>
-                                <td class="item-price">{{ item.product.final_price }} ₽</td>
-                                <td class="item-total" id="item-total-{{ item.id }}">
-                                    {{ item.total_price }} ₽
-                                </td>
-                                <td>
-                                    <!-- ============================================================ -->
-                                    <!-- 🚀 AJAX-УДАЛЕНИЕ (без перезагрузки) -->
-                                    <!-- ============================================================ -->
-                                    <button class="btn btn-sm btn-danger cart-remove-btn"
-                                            data-item-id="{{ item.id }}">
-                                        🗑️ Удалить
-                                    </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr style="border-color: rgba(255, 255, 255, 0.1);">
+                                <td colspan="3" style="background: transparent;" class="text-end text-muted">Итого к оплате:</td>
+                                <td colspan="2" style="background: transparent;">
+                                    <span class="fs-5 fw-bold" id="cart-total" style="color: #00ffb3;">{{ cart.total_price }} ₽</span>
                                 </td>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3"><strong>Итого:</strong></td>
-                            <td><strong id="cart-total">{{ cart.total_price }} ₽</strong></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
-            <a href="{% url 'orders:checkout' %}" class="btn btn-success">Оформить заказ</a>
+
+            <div class="d-flex justify-content-end">
+                <a href="{% url 'orders:checkout' %}" class="btn px-4 py-2 rounded-pill fw-bold shadow-lg" style="background-color: #00ffb3; color: #0b0914; border: none;">
+                    Оформить заказ
+                </a>
+            </div>
         {% else %}
-            <div class="alert alert-info">
-                Корзина пуста. <a href="{% url 'shop:product_list' %}">Перейти к покупкам</a>
+            <!-- Стильное темное сообщение о пустой корзине -->
+            <div class="text-center py-5 rounded-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div class="mb-3" style="font-size: 3rem;">🛒</div>
+                <h4 class="text-light fw-bold mb-2">Корзина пуста</h4>
+                <p class="text-muted mb-4">Добавьте книги из каталога, чтобы сделать заказ.</p>
+                <a href="{% url 'shop:product_list' %}" class="btn px-4 py-2 rounded-pill fw-bold" style="background-color: #00ffb3; color: #0b0914; border: none;">
+                    Перейти к покупкам
+                </a>
             </div>
         {% endif %}
     </div>
+</div>
 
     <!-- ============================================================ -->
     <!-- 🚀 AJAX-СКРИПТ ДЛЯ КОРЗИНЫ -->
@@ -108,19 +120,16 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Обновляем итоговую сумму строки
                             const itemTotal = document.getElementById(`item-total-${itemId}`);
                             if (itemTotal) {
-                                itemTotal.textContent = data.item_total + ' ₽';
+                                itemTotal.innerHTML = `<span style="color: #00ffb3;">${data.item_total} ₽</span>`;
                             }
 
-                            // Обновляем общую сумму корзины
                             const cartTotal = document.getElementById('cart-total');
                             if (cartTotal) {
                                 cartTotal.textContent = data.total_price + ' ₽';
                             }
 
-                            // Обновляем счётчик в навигации
                             const countElement = document.querySelector('.cart-count');
                             if (countElement) {
                                 countElement.textContent = data.total_items;
@@ -156,19 +165,16 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Удаляем строку из таблицы
                             const row = document.getElementById(`cart-item-${itemId}`);
                             if (row) {
                                 row.remove();
                             }
 
-                            // Обновляем общую сумму
                             const cartTotal = document.getElementById('cart-total');
                             if (cartTotal) {
                                 cartTotal.textContent = data.total_price + ' ₽';
                             }
 
-                            // Обновляем счётчик
                             const countElement = document.querySelector('.cart-count');
                             if (countElement) {
                                 countElement.textContent = data.total_items;
@@ -176,13 +182,17 @@
 
                             showNotification(data.message, 'success');
 
-                            // Если корзина пуста — показываем сообщение
                             if (data.total_items === 0) {
                                 const container = document.getElementById('cart-container');
                                 if (container) {
                                     container.innerHTML = `
-                                        <div class="alert alert-info">
-                                            Корзина пуста. <a href="{% url 'shop:product_list' %}">Перейти к покупкам</a>
+                                        <div class="text-center py-5 rounded-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                            <div class="mb-3" style="font-size: 3rem;">🛒</div>
+                                            <h4 class="text-light fw-bold mb-2">Корзина пуста</h4>
+                                            <p class="text-muted mb-4">Добавьте книги из каталога, чтобы сделать заказ.</p>
+                                            <a href="{% url 'shop:product_list' %}" class="btn px-4 py-2 rounded-pill fw-bold" style="background-color: #00ffb3; color: #0b0914; border: none;">
+                                                Перейти к покупкам
+                                            </a>
                                         </div>
                                     `;
                                 }
@@ -197,7 +207,7 @@
             });
 
             // ------------------------------------------------------------
-            // 3. ОБНОВЛЕНИЕ ПРИ НАЖАТИИ ENTER В ПОЛЕ КОЛИЧЕСТВА
+            // 3. ОБНОВЛЕНИЕ ПРИ НАЖАТИИ ENTER
             // ------------------------------------------------------------
             document.querySelectorAll('.cart-quantity-input').forEach(input => {
                 input.addEventListener('keydown', function(e) {

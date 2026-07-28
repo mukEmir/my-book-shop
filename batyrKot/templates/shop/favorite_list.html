@@ -1,42 +1,60 @@
 {% extends 'base.html' %}
 
-{% block title %}Избранное{% endblock %}
+{% block title %}Избранное — Malignant Body{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Избранное</h1>
+<div class="container py-4">
+    <h2 class="text-white mb-4 fw-bold" style="font-family: 'Unbounded', sans-serif;">Избранное</h2>
 
     {% if favorites %}
-        <div class="row">
+        <div class="row g-4">
             {% for favorite in favorites %}
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        {% if favorite.product.image %}
-                            <img src="{{ favorite.product.image.url }}" class="card-img-top" alt="{{ favorite.product.name }}" style="height: 180px; object-fit: cover;">
-                        {% else %}
-                            <img src="https://via.placeholder.com/300x180" class="card-img-top" alt="No image">
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ favorite.product.name }}</h5>
-                            <p class="card-text">
-                                <span class="fw-bold">{{ favorite.product.price }} ₽</span>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card h-100 text-light border-0 rounded-4 overflow-hidden shadow-lg" style="background: rgba(255, 255, 255, 0.03) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(10px);">
+
+                        <!-- Картинка товара -->
+                        <div style="height: 180px; overflow: hidden; background: rgba(0,0,0,0.2);">
+                            {% if favorite.product.image %}
+                                <img src="{{ favorite.product.image.url }}" class="w-100 h-100" alt="{{ favorite.product.name }}" style="object-fit: cover;">
+                            {% else %}
+                                <img src="https://via.placeholder.com/300x180" class="w-100 h-100" alt="No image" style="object-fit: cover;">
+                            {% endif %}
+                        </div>
+
+                        <!-- Тело карточки -->
+                        <div class="card-body d-flex flex-column p-4">
+                            <h5 class="card-title fw-bold text-light mb-2" style="font-size: 1.1rem;">{{ favorite.product.name }}</h5>
+                            <p class="card-text mb-4">
+                                <span class="fs-5 fw-bold" style="color: #00ffb3;">{{ favorite.product.price }} ₽</span>
                             </p>
 
-                            <button class="btn btn-outline-danger btn-sm favorite-btn mb-2"
-                                    data-url="{% url 'shop:api_toggle_favorite' favorite.product.slug %}">
-                                Удалить
-                            </button>
+                            <div class="mt-auto d-flex flex-column gap-2">
+                                <button class="btn btn-sm favorite-btn py-2 rounded-pill fw-semibold"
+                                        style="background-color: rgba(255, 77, 109, 0.15); color: #ff4d6d; border: 1px solid #ff4d6d;"
+                                        data-url="{% url 'shop:api_toggle_favorite' favorite.product.slug %}">
+                                    Удалить
+                                </button>
 
-                            <a href="{% url 'shop:product_detail' favorite.product.slug %}" class="btn btn-outline-primary btn-sm">
-                                Подробнее
-                            </a>
+                                <a href="{% url 'shop:product_detail' favorite.product.slug %}" class="btn btn-sm py-2 rounded-pill fw-semibold" style="background-color: #00ffb3; color: #0b0914; border: none;">
+                                    Подробнее
+                                </a>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <div class="alert alert-info">
-            У вас пока нет избранных товаров. <a href="{% url 'shop:product_list' %}">Перейти к покупкам</a>
+        <!-- Красивое темное сообщение, если избранного нет -->
+        <div class="text-center py-5 rounded-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="mb-3" style="font-size: 3rem;">✨</div>
+            <h4 class="text-light fw-bold mb-2">У вас пока нет избранных товаров</h4>
+            <p class="text-muted mb-4">Добавляйте понравившиеся книги, чтобы не потерять их.</p>
+            <a href="{% url 'shop:product_list' %}" class="btn px-4 py-2 rounded-pill fw-bold" style="background-color: #00ffb3; color: #0b0914; border: none;">
+                Перейти к покупкам
+            </a>
         </div>
     {% endif %}
+</div>
 {% endblock %}

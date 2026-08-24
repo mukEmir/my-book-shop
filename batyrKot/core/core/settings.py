@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Безопасность (для разработки)
 SECRET_KEY = 'django-insecure-8#_&@2%8w!q$9x7b6f5g4h3j2k1l0m9n8o7p6q5r4s3t2u1v0w9x8y7z'
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['my-book-shop-z7cj.onrender.com', 'localhost', '127.0.0.1', '*']
 
 # ------------------------------------------------------------
 # Приложения
